@@ -71,10 +71,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: RoomFit-3.2.1-APK
-          path: dist/RoomFit-3.2-AR-debug.apk
+          path: dist/RoomFit-3.2.1-AR-PreviewFix-debug.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: RoomFit-3.2.1-Source
-          path: dist/RoomFit-3.2-Android-Source.zip
+          path: dist/RoomFit-3.2.1-Android-Source.zip
           if-no-files-found: error
