@@ -1,0 +1,75 @@
+name: RoomFit 3.2 Android APK
+on:
+  push:
+    branches: [roomfit-3.2-apk-build]
+    paths:
+      - 'roomfit32/**'
+      - '.github/workflows/build-roomfit32.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip 3.1.1 source baseline
+        run: |
+          set -euo pipefail
+          unzip -q RoomFit-3.1.1-Full-AR-Source.zip -d build-work
+          test -f build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit3.js
+      - name: Patch RoomFit 3.2 recommendations
+        run: |
+          python roomfit32/roomfit32-patch.py build-work/RoomFit-3.1.1-Full-AR-Source
+          test -f build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit32-recommend.js
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Setup Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -maxdepth 3 -type f -name sdkmanager | sort -V | tail -n1)"
+          fi
+          test -x "$SDKMANAGER"
+          printf 'ANDROID_HOME=%s\n' "$ANDROID_HOME" >> "$GITHUB_ENV"
+          printf 'ANDROID_SDK_ROOT=%s\n' "$ANDROID_HOME" >> "$GITHUB_ENV"
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'platform-tools'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Verify Javascript and build Android APK
+        working-directory: build-work/RoomFit-3.1.1-Full-AR-Source
+        run: |
+          node --check app/src/main/assets/web/roomfit3.js
+          node --check app/src/main/assets/web/roomfit32-recommend.js
+          chmod +x ./gradlew
+          ./gradlew --no-daemon --stacktrace :app:assembleDebug
+      - name: Package APK and editable Android source
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.2-AR-debug.apk
+          mkdir -p build-work/RoomFit-3.1.1-Full-AR-Source/tools
+          cp roomfit32/roomfit32-patch.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-patch.py
+          cd build-work
+          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.2-Android-Source
+          rm -rf RoomFit-3.2-Android-Source/app/build RoomFit-3.2-Android-Source/.gradle
+          zip -qr ../dist/RoomFit-3.2-Android-Source.zip RoomFit-3.2-Android-Source -x '*.DS_Store'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RoomFit-3.2-APK
+          path: dist/RoomFit-3.2-AR-debug.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RoomFit-3.2-Source
+          path: dist/RoomFit-3.2-Android-Source.zip
+          if-no-files-found: error
