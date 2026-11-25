@@ -1,0 +1,34 @@
+/* RoomFit 3.4 -- 5-step UI, compact navigation and simplified mobile controls. */
+:root{--rf34-green:#21734d;--rf34-border:#dce9df}
+body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px));background:#f7faf7}
+body.rf34-drawer-open{overflow:hidden}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;position:relative;z-index:7;min-height:68px}
+.rf34-head-left{display:flex;align-items:center;gap:12px}.rf34-brand{font-weight:900;color:#174b31;font-size:24px;line-height:1}.rf34-brand span{color:#cc9c72}.rf34-brand small{display:block;font-size:9px;letter-spacing:1px;color:#779584;padding-top:5px}.rf34-head-meta{font-size:11px;font-weight:700;color:#7b9a82}
+.rf34-icon-button{background:#eef5ee;border:0;border-radius:12px;color:#206645;width:42px;height:42px;display:grid;place-items:center}.rf34-icon-button svg,.rf34-tabs svg,.rf34-drawer svg{width:24px;height:24px}
+.steps.rf34-old-steps{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;opacity:0;pointer-events:none!important;padding:0!important;margin:0!important}
+.rf34-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:12px 0 10px}
+.rf34-progress button{border:1px solid #e0e9e1;border-radius:12px;padding:9px 2px 8px;min-height:65px;background:white;display:flex;flex-direction:column;align-items:center;gap:6px;color:#8ca399}
+.rf34-progress button span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#edf1ee;font-size:12px;font-weight:800}
+.rf34-progress button small{font-size:10px;font-weight:700;word-break:keep-all;text-align:center;line-height:1.25}
+.rf34-progress button.active{background:#e7f4e9;color:#1a6040;border-color:#89c5a2}.rf34-progress button.active span{background:#23794c;color:white}
+.rf34-progress button.finished{color:#3c8a61}.rf34-progress button.finished span{background:#d3efdc;color:#2c8458}
+.step .panel[hidden],.step[hidden],.rf34-3d-step[hidden],.rf34-progress[hidden]{display:none!important}
+.rf34-tabs{position:fixed;bottom:0;left:0;right:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid #dfe9e0;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -7px 20px #14382115}
+.rf34-tabs button{border:0;background:none;min-height:54px;color:#91a69a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;border-radius:12px;font-weight:600}
+.rf34-tabs button.active{color:#1f774b;background:#eef7ef}.rf34-tabs button span{line-height:1}
+.rf34-backdrop{position:fixed;inset:0;background:#0c2718b0;z-index:44}.rf34-drawer{position:fixed;left:0;top:0;bottom:0;width:min(340px,87vw);background:#fff;padding:27px 18px;z-index:45;overflow:auto;box-shadow:10px 0 30px #112e1f33}
+.rf34-drawer[hidden],.rf34-backdrop[hidden]{display:none!important}.rf34-drawer-title{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #e2eae5;padding:4px 0 25px}
+.rf34-drawer-title>div{display:flex;flex-direction:column}.rf34-drawer-title small{font-size:10px;letter-spacing:2px;color:#80a58d}.rf34-drawer-title strong{font-size:32px;color:#255f40}.rf34-drawer-title strong span{color:#bb9a6b}.rf34-drawer-title p{font-size:12px;color:#7a9482;margin:0}
+.rf34-drawer nav{display:grid;gap:5px;margin-top:24px}.rf34-drawer nav button{border:0;background:transparent;color:#416151;padding:12px 10px;border-radius:12px;display:flex;align-items:center;gap:14px;text-align:left;font-weight:700;min-height:50px}
+.rf34-drawer nav button.active{background:#e6f4e9;color:#1d7546}.rf34-drawer-note{background:#f0f6f0;border-radius:15px;padding:18px;color:#647e6a;font-size:12px;line-height:1.6;margin-top:28px}
+.rf34-3d-step .panel{padding:15px}.rf34-message{font-size:13px;color:#54705c;line-height:1.7;margin:0 0 14px}
+.rf34-preview-list{display:grid;gap:12px}.rf34-3d-card{display:flex;gap:13px;background:#fff;border:1px solid #e0eee4;border-radius:16px;padding:12px;align-items:center}
+.rf34-3d-card img{width:78px;height:80px;object-fit:contain;background:#f5f7f4;border-radius:12px;flex:none}
+.rf34-3d-card>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}.rf34-3d-card strong{font-size:13px;line-height:1.4}.rf34-3d-card small{font-size:11px;color:#6b8873}
+.rf34-3d-card button{font-size:12px;padding:9px 7px;border-radius:11px;border:0}
+.rf34-ar-guide{padding:18px;border:1px solid #cfe1d2;background:#eff7ef;border-radius:16px;margin-top:14px;color:#3d634a;font-size:12px;line-height:1.7}
+.rf34-ar-guide strong{font-size:14px}.rf34-open-library{margin:14px 0 4px;width:100%;padding:12px}
+.nav{position:sticky;bottom:calc(75px + env(safe-area-inset-bottom,0px));z-index:9}
+.rf-tabs,.rf-drawer,.rf-drawer-overlay,.rf-meter,.rf-selection-summary{display:none!important}
+@media(max-width:390px){.rf34-progress{gap:3px}.rf34-progress button{min-height:66px;padding:5px 1px}.rf34-progress button small{font-size:9px}.rf34-3d-card img{width:65px;height:70px}}
+@media(min-width:720px){.rf34-tabs{max-width:700px;left:50%;transform:translateX(-50%);border-radius:16px 16px 0 0}}
