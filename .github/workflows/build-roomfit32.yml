@@ -1,11 +1,12 @@
-name: RoomFit 3.4 Five-Step + AR Diagnostics APK
+name: RoomFit 3.5 Simple AR Furniture APK
 on:
   push:
-    branches: [roomfit-3.4-five-step-ar-fix]
+    branches: [roomfit-3.5-simple-ar]
     paths:
       - 'roomfit32/**'
       - 'roomfit33/**'
       - 'roomfit34/**'
+      - 'roomfit35/**'
       - '.github/workflows/build-roomfit32.yml'
   workflow_dispatch:
 permissions:
@@ -46,6 +47,11 @@ jobs:
           python roomfit34/roomfit34-apply.py build-work/RoomFit-3.1.1-Full-AR-Source
           node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit34-ui.js
           grep -q '5단계 진행' build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit34-ui.js
+      - name: Simplify AR to model placement and size warning
+        run: |
+          python roomfit35/roomfit35-simple-ar.py build-work/RoomFit-3.1.1-Full-AR-Source
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit34-ui.js
+          grep -q 'Config.DepthMode.DISABLED' build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/java/kr/ac/roomfit/app/LockedArActivity.java
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -87,24 +93,25 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.4-Five-Step-AR-debug.apk
+          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.5-Simple-AR-debug.apk
           mkdir -p build-work/RoomFit-3.1.1-Full-AR-Source/tools
           cp roomfit32/roomfit32-patch.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-patch.py
           cp roomfit32/roomfit32-ar-preview-fix.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-ar-preview-fix.py
           cp roomfit32/roomfit32-ar-3d-fix.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-ar-3d-fix.py
           cp -r roomfit33 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit33
           cp -r roomfit34 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit34
+          cp -r roomfit35 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit35
           cd build-work
-          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.4-Android-Source
-          rm -rf RoomFit-3.4-Android-Source/app/build RoomFit-3.4-Android-Source/.gradle
-          zip -qr ../dist/RoomFit-3.4-Android-Source.zip RoomFit-3.4-Android-Source -x '*.DS_Store'
+          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.5-Android-Source
+          rm -rf RoomFit-3.5-Android-Source/app/build RoomFit-3.5-Android-Source/.gradle
+          zip -qr ../dist/RoomFit-3.5-Android-Source.zip RoomFit-3.5-Android-Source -x '*.DS_Store'
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.4-APK
-          path: dist/RoomFit-3.4-Five-Step-AR-debug.apk
+          name: RoomFit-3.5-APK
+          path: dist/RoomFit-3.5-Simple-AR-debug.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.4-Source
-          path: dist/RoomFit-3.4-Android-Source.zip
+          name: RoomFit-3.5-Source
+          path: dist/RoomFit-3.5-Android-Source.zip
           if-no-files-found: error
