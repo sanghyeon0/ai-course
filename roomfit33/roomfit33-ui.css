@@ -1,0 +1,67 @@
+/* RoomFit 3.3 mobile: guided flow with anchored actions, bottom tabs and left navigation. */
+:root{--rf-dark:#183d2f;--rf-green:#227047;--rf-muted:#7a8c80;--rf-bg:#f6f8f5;--rf-line:#dce7df}
+html{scroll-behavior:smooth;scroll-padding-top:128px}
+body{background:var(--rf-bg);font-size:14px;color:#203d30;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+body.rf-drawer-open{overflow:hidden}
+.app-header{max-width:none;background:#fff;border-bottom:1px solid #e8eee8;position:relative;z-index:7;padding:12px 17px;min-height:70px}
+.rf-header-left{display:flex;align-items:center;gap:13px}
+.rf-menu-btn{display:grid;place-items:center;border:0;background:#f1f5ef;border-radius:13px;width:42px;height:42px;color:var(--rf-dark)}
+.rf-menu-btn svg,.rf-tabs svg,.rf-drawer svg{width:23px;height:23px}
+.app-header .brand{font-size:24px;line-height:1.1}
+.app-header .brand small{font-size:9px;margin-top:4px;color:#a2b4a4}
+.rf-header-status{font-size:10px;font-weight:800;color:#527160;display:flex;gap:7px;align-items:center;letter-spacing:1px}
+.rf-status-dot{width:7px;height:7px;background:#51a976;border-radius:50%;box-shadow:0 0 0 4px #eaf6ed}
+.shell{padding:0 16px 34px;max-width:780px}
+.rf-intro{padding:24px 5px 13px}
+.rf-intro h1{font-size:clamp(25px,5.7vw,33px);letter-spacing:-1.2px;line-height:1.38;margin:9px 0 8px}
+.rf-intro p{font-size:13px}
+.steps{position:relative;top:auto;background:transparent;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:14px 0 9px}
+.steps button{font-size:12px;background:#fff;border:1px solid var(--rf-line);color:#7d8b7f;min-height:49px;padding:7px 2px;box-shadow:0 2px 6px #274d3210}
+.steps button.active{background:#e8f5ec;border-color:var(--rf-green);color:var(--rf-dark)}
+.steps button i{width:20px;height:20px;font-size:11px}
+.steps button[data-step="4"]{display:none!important}
+.rf-meter{height:4px;border-radius:4px;display:flex;gap:5px;margin:1px 0 8px}
+.rf-meter span{flex:1;border-radius:4px;background:#e5eee7;transition:background .2s}
+.rf-meter span.filled{background:#308757}
+.progress{font-size:11px;font-weight:750;margin:7px 1px;color:#71917b}
+.section-title{margin:18px 3px 16px}
+.section-title h2{font-size:clamp(23px,5.5vw,28px);letter-spacing:-.9px}
+.section-title p{font-size:13px}
+.panel{border:1px solid #e4ece6;border-radius:19px;padding:18px;box-shadow:0 4px 18px #24453108;margin-bottom:12px}
+.routine{min-height:63px;border-radius:15px;background:#fff}
+.routine .emoji{font-size:25px}
+.nav{position:sticky;bottom:calc(72px + env(safe-area-inset-bottom,0px));padding:12px 2px 7px;background:linear-gradient(180deg,#f6f8f500 0%,#f6f8f5 15%);z-index:4}
+.nav button{min-height:51px;border-radius:15px;font-size:14px}
+.nav .primary{background:var(--rf-green);box-shadow:0 5px 15px #174b2a2b}
+.nav .soft{background:#ecf3ec}
+.rf-tabs{position:fixed;bottom:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid #e4eae5;box-shadow:0 -7px 25px #183e3010;padding:7px max(8px,env(safe-area-inset-left,0px)) calc(7px + env(safe-area-inset-bottom,0px));min-height:70px}
+.rf-tabs button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:transparent;border:0;color:#98a69d;font-size:11px;min-height:54px;border-radius:12px;letter-spacing:-.2px}
+.rf-tabs button.active{color:#217149;font-weight:800}
+.rf-tabs button.active svg{stroke-width:2.3}
+.rf-count{position:absolute;top:1px;right:calc(50% - 25px);background:#28734e;color:#fff;border-radius:9px;font-style:normal;font-size:10px;line-height:16px;min-width:16px}
+.rf-drawer-overlay{position:fixed;inset:0;background:#09190e88;z-index:49}
+.rf-drawer{position:fixed;z-index:50;top:0;left:0;bottom:0;max-width:min(84vw,340px);width:340px;background:#fff;box-shadow:12px 0 35px #102f1f33;overflow:auto;padding:26px 18px max(24px,env(safe-area-inset-bottom,0px))}
+.rf-drawer-head{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 5px 28px;border-bottom:1px solid #edf1eb}
+.rf-drawer-head>div{display:flex;flex-direction:column}
+.rf-drawer-mini{font-size:10px;font-weight:800;color:#739a79;letter-spacing:1.4px}
+.rf-drawer-head strong{font-size:30px;color:#205a3c;letter-spacing:-1px}.rf-drawer-head strong span{color:#ca8252}
+.rf-drawer-head small{color:#899a8b;font-size:12px}
+#rf-menu-close{border:0;background:#f3f5f2;border-radius:12px;width:42px;height:42px;color:#365241;display:grid;place-items:center}
+.rf-drawer-caption{margin:27px 10px 10px;font-size:12px;font-weight:800;color:#90a296}
+.rf-drawer-links{display:grid;gap:5px}
+.rf-drawer-links button{display:flex;gap:13px;align-items:center;text-align:left;border:0;background:transparent;border-radius:13px;padding:15px 10px;color:#304637;font-weight:750}
+.rf-drawer-links button.active{background:#ecf5ee;color:#1c7847}
+.rf-drawer-links button span{flex:1}
+.rf-drawer-links button svg:last-child{width:15px;height:15px;opacity:.45}
+.rf-drawer-info{padding:18px;background:#f2f7f1;border-radius:15px;margin:27px 2px 20px;font-size:12px;color:#56735f;line-height:1.9}
+.rf-drawer-info strong{color:#2d6842;font-size:14px}
+.rf-drawer-info p{margin:5px 0 10px}.rf-drawer-info small{color:#78917d}
+.rf-drawer-version{text-align:center;font-size:11px;color:#a2aaa5}
+.rf-selection-summary{display:flex;align-items:center;gap:10px;background:#e7f4eb;border:1px solid #cde5d3;border-radius:14px;margin:0 0 14px;padding:13px 15px;color:#2d5d40;cursor:pointer}
+.rf-selection-summary span{font-size:12px}.rf-selection-summary strong{font-size:19px}.rf-selection-summary small{margin-left:auto;color:#6a9475;font-size:11px}
+.catalog{max-height:480px}
+.product{border-radius:14px}
+.product button{border-radius:10px;min-height:36px}
+@media(min-width:700px){.rf-tabs{left:50%;right:auto;transform:translateX(-50%);width:700px;border:1px solid #e4eae5;border-bottom:0;border-radius:18px 18px 0 0}}
+@media(max-width:380px){.steps button{font-size:10px}.rf-header-status{font-size:9px}.shell{padding-left:12px;padding-right:12px}.rf-selection-summary{padding:11px}.rf-selection-summary small{font-size:10px}.panel{padding:14px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rf-meter span{transition:none}}
