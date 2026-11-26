@@ -1,7 +1,7 @@
-name: RoomFit 3.9.7 Original Uploaded AR APK
+name: RoomFit 4.0 WebXR Android and Pages
 on:
   push:
-    branches: [roomfit-3.9.7-upload-build]
+    branches: [roomfit-4.0-webxr]
     paths:
       - 'roomfit32/**'
       - 'roomfit33/**'
@@ -18,6 +18,7 @@ on:
       - 'roomfit395/**'
       - 'roomfit396/**'
       - 'roomfit397/**'
+      - 'roomfit40/**'
       - '.github/workflows/build-roomfit32.yml'
   workflow_dispatch:
 permissions:
@@ -116,6 +117,21 @@ jobs:
       - name: Apply uploaded RoomFit 3.9.7 and verify SHA256
         run: |
           python roomfit397/patch.py build-work/RoomFit-3.1.1-Full-AR-Source
+      - name: Apply RoomFit 4.0 Chrome WebXR
+        run: |
+          python roomfit40/patch.py build-work/RoomFit-3.1.1-Full-AR-Source roomfit40/index.html site/roomfit-webxr
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit3.js
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit34-ui.js
+          touch site/.nojekyll
+          printf '%s\n' '<!doctype html><html lang="ko"><meta charset="utf-8"><title>RoomFit WebXR</title><a href="roomfit-webxr/">룸핏 WebXR 열기</a></html>' > site/index.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RoomFit-4.0-WebXR-Site
+          path: site/
+          if-no-files-found: error
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -157,7 +173,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.9.7-Original-AR-debug.apk
+          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-4.0-WebXR-debug.apk
           mkdir -p build-work/RoomFit-3.1.1-Full-AR-Source/tools
           cp roomfit32/roomfit32-patch.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-patch.py
           cp roomfit32/roomfit32-ar-preview-fix.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-ar-preview-fix.py
@@ -172,16 +188,34 @@ jobs:
           cp -r roomfit391 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit391
           cp -r roomfit392 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit392
           cd build-work
-          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.9.7-Android-Source
-          rm -rf RoomFit-3.9.7-Android-Source/app/build RoomFit-3.9.7-Android-Source/.gradle
-          zip -qr ../dist/RoomFit-3.9.7-Android-Source.zip RoomFit-3.9.7-Android-Source -x '*.DS_Store'
+          mv RoomFit-3.1.1-Full-AR-Source RoomFit-4.0-Android-Source
+          rm -rf RoomFit-4.0-Android-Source/app/build RoomFit-4.0-Android-Source/.gradle
+          zip -qr ../dist/RoomFit-4.0-Android-Source.zip RoomFit-4.0-Android-Source -x '*.DS_Store'
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.9.7-APK
-          path: dist/RoomFit-3.9.7-Original-AR-debug.apk
+          name: RoomFit-4.0-APK
+          path: dist/RoomFit-4.0-WebXR-debug.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.9.7-Source
-          path: dist/RoomFit-3.9.7-Android-Source.zip
+          name: RoomFit-4.0-Source
+          path: dist/RoomFit-4.0-Android-Source.zip
           if-no-files-found: error
+  deploy-webxr:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Deploy WebXR website
+        id: deployment
+        uses: actions/deploy-pages@v4
