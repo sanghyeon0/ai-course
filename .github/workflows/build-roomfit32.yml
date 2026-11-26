@@ -1,7 +1,7 @@
-name: RoomFit 3.9 Stable Floor AR APK
+name: RoomFit 3.9.1 Native Plane and Point AR APK
 on:
   push:
-    branches: [roomfit-3.9-floor-anchored-ar]
+    branches: [roomfit-3.9.1-plane-point-ar]
     paths:
       - 'roomfit32/**'
       - 'roomfit33/**'
@@ -11,10 +11,11 @@ on:
       - 'roomfit37/**'
       - 'roomfit38/**'
       - 'roomfit39/**'
+      - 'roomfit391/**'
       - '.github/workflows/build-roomfit32.yml'
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -78,22 +79,11 @@ jobs:
           node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit3.js
           grep -q 'RoomFitStableAR.open' build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/java/kr/ac/roomfit/app/MainActivity.java
           ! grep -q 'estimateAnchor(camera)' build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/java/kr/ac/roomfit/app/SimpleFurnitureArActivity.java
-      - name: Publish bundled GLB models so Google Scene Viewer can download them
-        shell: bash
+      - name: Fix native AR route and add tracked feature point placement
         run: |
-          set -euo pipefail
-          mkdir -p public-models
-          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/product-models/*.glb public-models/
-          count=$(find public-models -maxdepth 1 -name '*.glb' | wc -l)
-          echo "Model count: $count"
-          test "$count" -ge 55
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public-models
-          if ! git diff --cached --quiet; then
-            git commit -m "Publish RoomFit GLB furniture models for Scene Viewer"
-            git push origin HEAD:roomfit-3.9-floor-anchored-ar
-          fi
+          python roomfit391/roomfit391-patch.py build-work/RoomFit-3.1.1-Full-AR-Source
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit3.js
+          grep -q 'feature=hit' build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/java/kr/ac/roomfit/app/SimpleFurnitureArActivity.java
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -135,7 +125,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.9-Fixed-AR-debug.apk
+          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.9.1-Native-AR-debug.apk
           mkdir -p build-work/RoomFit-3.1.1-Full-AR-Source/tools
           cp roomfit32/roomfit32-patch.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-patch.py
           cp roomfit32/roomfit32-ar-preview-fix.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-ar-preview-fix.py
@@ -147,17 +137,18 @@ jobs:
           cp -r roomfit37 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit37
           cp -r roomfit38 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit38
           cp -r roomfit39 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit39
+          cp -r roomfit391 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit391
           cd build-work
-          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.9-Android-Source
-          rm -rf RoomFit-3.9-Android-Source/app/build RoomFit-3.9-Android-Source/.gradle
-          zip -qr ../dist/RoomFit-3.9-Android-Source.zip RoomFit-3.9-Android-Source -x '*.DS_Store'
+          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.9.1-Android-Source
+          rm -rf RoomFit-3.9.1-Android-Source/app/build RoomFit-3.9.1-Android-Source/.gradle
+          zip -qr ../dist/RoomFit-3.9.1-Android-Source.zip RoomFit-3.9.1-Android-Source -x '*.DS_Store'
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.9-APK
-          path: dist/RoomFit-3.9-Fixed-AR-debug.apk
+          name: RoomFit-3.9.1-APK
+          path: dist/RoomFit-3.9.1-Native-AR-debug.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.9-Source
-          path: dist/RoomFit-3.9-Android-Source.zip
+          name: RoomFit-3.9.1-Source
+          path: dist/RoomFit-3.9.1-Android-Source.zip
           if-no-files-found: error
