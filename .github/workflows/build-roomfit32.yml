@@ -119,12 +119,12 @@ jobs:
           node --check app/src/main/assets/web/roomfit32-recommend.js
           chmod +x ./gradlew
           for attempt in 1 2 3; do
-            if ./gradlew --no-daemon --stacktrace --refresh-dependencies :app:assembleDebug; then
+            if ./gradlew --no-daemon --stacktrace :app:assembleDebug; then
               echo "Android APK build completed on attempt $attempt"
               break
             fi
             if [ "$attempt" -eq 3 ]; then echo "Build failed after retries"; exit 1; fi
-            echo "Retrying Gradle dependency download ($attempt)"
+            echo "Retrying Gradle build after dependency fetch issue ($attempt)"
             sleep 15
           done
       - name: Package APK and editable Android source
