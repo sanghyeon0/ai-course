@@ -83,18 +83,19 @@ public final class RoomFitStableAR {
                 .appendQueryParameter("mode","ar_only")
                 .appendQueryParameter("resizable","false")
                 .appendQueryParameter("title",name.length()>60?name.substring(0,60):name).build();
-            Intent ar=new Intent(Intent.ACTION_VIEW,data);
-            ar.setPackage("com.google.ar.core");
+            // Reproduce the user's older working RoomFit Android app:
+            // invoke Google's Scene Viewer through the Google app first.
+            Uri preferred=data.buildUpon().clearQuery().appendQueryParameter("file",model)
+                .appendQueryParameter("mode","ar_preferred")
+                .appendQueryParameter("resizable","false")
+                .appendQueryParameter("title",name.length()>60?name.substring(0,60):name).build();
             try{
-                activity.startActivity(ar);
-            }catch(ActivityNotFoundException missingArCore){
-                // Original working RoomFit flow used the Google app, not a
-                // custom native renderer. Reuse that path if needed.
-                Uri preferred=data.buildUpon().clearQuery().appendQueryParameter("file",model)
-                    .appendQueryParameter("mode","ar_preferred")
-                    .appendQueryParameter("resizable","false").build();
                 activity.startActivity(new Intent(Intent.ACTION_VIEW,preferred)
                     .setPackage("com.google.android.googlequicksearchbox"));
+            }catch(ActivityNotFoundException missingGoogleApp){
+                // Some devices expose the AR service as the Scene Viewer entry.
+                activity.startActivity(new Intent(Intent.ACTION_VIEW,data)
+                    .setPackage("com.google.ar.core"));
             }
         }catch(Exception error){
             Log.e(TAG,"Scene Viewer failed",error);
