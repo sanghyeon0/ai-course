@@ -1,7 +1,7 @@
-name: RoomFit 3.9.4 Original Uploaded AR APK
+name: RoomFit 3.9.5 Original Uploaded AR APK
 on:
   push:
-    branches: [roomfit-3.9.4-direct-ar]
+    branches: [roomfit-3.9.5-native-preview]
     paths:
       - 'roomfit32/**'
       - 'roomfit33/**'
@@ -15,6 +15,7 @@ on:
       - 'roomfit392/**'
       - 'roomfit393/**'
       - 'roomfit394/**'
+      - 'roomfit395/**'
       - '.github/workflows/build-roomfit32.yml'
   workflow_dispatch:
 permissions:
@@ -102,6 +103,11 @@ jobs:
           python roomfit394/patch.py build-work/RoomFit-3.1.1-Full-AR-Source
           node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit3.js
           node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit34-ui.js
+      - name: Apply RoomFit 3.9.5 native AR preview
+        run: |
+          python roomfit395/patch.py build-work/RoomFit-3.1.1-Full-AR-Source
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit3.js
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit34-ui.js
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -143,7 +149,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.9.4-Original-AR-debug.apk
+          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.9.5-Original-AR-debug.apk
           mkdir -p build-work/RoomFit-3.1.1-Full-AR-Source/tools
           cp roomfit32/roomfit32-patch.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-patch.py
           cp roomfit32/roomfit32-ar-preview-fix.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-ar-preview-fix.py
@@ -158,16 +164,16 @@ jobs:
           cp -r roomfit391 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit391
           cp -r roomfit392 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit392
           cd build-work
-          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.9.4-Android-Source
-          rm -rf RoomFit-3.9.4-Android-Source/app/build RoomFit-3.9.4-Android-Source/.gradle
-          zip -qr ../dist/RoomFit-3.9.4-Android-Source.zip RoomFit-3.9.4-Android-Source -x '*.DS_Store'
+          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.9.5-Android-Source
+          rm -rf RoomFit-3.9.5-Android-Source/app/build RoomFit-3.9.5-Android-Source/.gradle
+          zip -qr ../dist/RoomFit-3.9.5-Android-Source.zip RoomFit-3.9.5-Android-Source -x '*.DS_Store'
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.9.4-APK
-          path: dist/RoomFit-3.9.4-Original-AR-debug.apk
+          name: RoomFit-3.9.5-APK
+          path: dist/RoomFit-3.9.5-Original-AR-debug.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.9.4-Source
-          path: dist/RoomFit-3.9.4-Android-Source.zip
+          name: RoomFit-3.9.5-Source
+          path: dist/RoomFit-3.9.5-Android-Source.zip
           if-no-files-found: error
