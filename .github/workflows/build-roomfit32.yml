@@ -1,7 +1,7 @@
-name: RoomFit 3.7 AR Placement Fallback APK
+name: RoomFit 3.8 Minimal Furniture AR APK
 on:
   push:
-    branches: [roomfit-3.7-placement-fallback]
+    branches: [roomfit-3.8-basic-ar]
     paths:
       - 'roomfit32/**'
       - 'roomfit33/**'
@@ -9,6 +9,7 @@ on:
       - 'roomfit35/**'
       - 'roomfit36/**'
       - 'roomfit37/**'
+      - 'roomfit38/**'
       - '.github/workflows/build-roomfit32.yml'
   workflow_dispatch:
 permissions:
@@ -62,6 +63,12 @@ jobs:
         run: |
           python roomfit37/roomfit37-ar-fallback.py build-work/RoomFit-3.1.1-Full-AR-Source
           grep -q '가구 바로 표시' build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/java/kr/ac/roomfit/app/LockedArActivity.java
+      - name: Install RoomFit 3.8 standalone simple AR and direct step 4 to AR
+        run: |
+          python roomfit38/roomfit38-apply.py build-work/RoomFit-3.1.1-Full-AR-Source
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit34-ui.js
+          node --check build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/assets/web/roomfit3.js
+          grep -q 'SimpleFurnitureArActivity.class' build-work/RoomFit-3.1.1-Full-AR-Source/app/src/main/java/kr/ac/roomfit/app/MainActivity.java
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -103,7 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.7-AR-Fallback-debug.apk
+          cp build-work/RoomFit-3.1.1-Full-AR-Source/app/build/outputs/apk/debug/app-debug.apk dist/RoomFit-3.8-Basic-AR-debug.apk
           mkdir -p build-work/RoomFit-3.1.1-Full-AR-Source/tools
           cp roomfit32/roomfit32-patch.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-patch.py
           cp roomfit32/roomfit32-ar-preview-fix.py build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit32-ar-preview-fix.py
@@ -113,17 +120,18 @@ jobs:
           cp -r roomfit35 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit35
           cp -r roomfit36 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit36
           cp -r roomfit37 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit37
+          cp -r roomfit38 build-work/RoomFit-3.1.1-Full-AR-Source/tools/roomfit38
           cd build-work
-          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.7-Android-Source
-          rm -rf RoomFit-3.7-Android-Source/app/build RoomFit-3.7-Android-Source/.gradle
-          zip -qr ../dist/RoomFit-3.7-Android-Source.zip RoomFit-3.7-Android-Source -x '*.DS_Store'
+          mv RoomFit-3.1.1-Full-AR-Source RoomFit-3.8-Android-Source
+          rm -rf RoomFit-3.8-Android-Source/app/build RoomFit-3.8-Android-Source/.gradle
+          zip -qr ../dist/RoomFit-3.8-Android-Source.zip RoomFit-3.8-Android-Source -x '*.DS_Store'
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.7-APK
-          path: dist/RoomFit-3.7-AR-Fallback-debug.apk
+          name: RoomFit-3.8-APK
+          path: dist/RoomFit-3.8-Basic-AR-debug.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: RoomFit-3.7-Source
-          path: dist/RoomFit-3.7-Android-Source.zip
+          name: RoomFit-3.8-Source
+          path: dist/RoomFit-3.8-Android-Source.zip
           if-no-files-found: error
